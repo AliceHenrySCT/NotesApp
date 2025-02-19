@@ -1,0 +1,157 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1a1a1e; /* Dark neutral */
+  color: #c0c0c5; /* Soft gray */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  width: 80%;
+  max-width: 1200px;
+}
+
+.container {
+  background-color: #26262b; /* Darker neutral */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #a8a8b3; /* Light desaturated purple-gray */
+  margin: 5px 0;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea, span {
+  width: 90%;
+  padding: 8px;
+  margin: 5px auto;
+  display: block;
+  border: 1px solid #3a3a40; /* Slightly lighter gray */
+  border-radius: 5px;
+  background-color: #202025; /* Very dark gray */
+  color: #c0c0c5;
+  text-align: center;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 240px;
+  text-align: left;
+}
+
+button {
+  width: 100%;
+  padding: 8px;
+  background-color: #5a5a67; /* Desaturated purple-gray */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 5px;
+  text-align: center;
+}
+
+button:hover {
+  background-color: #6a6a78; /* Slightly lighter hover effect */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px solid #3a3a40;
+  background-color: #2e2e34; /* Softened dark background */
+  border-radius: 5px;
+  margin: 3px 0;
+  color: #c0c0c5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  text-align: center;
+  color: #d87070; /* Slightly muted error red */
+  margin-top: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#listOfNotes {
+  width: 300px;
+  height: 600px;
+  flex-shrink: 0;
+}
+
+#selNote {
+  width: 600px;
+  height: 600px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#logout {
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+  align-self: center;
+}
+
+#auth-buttons, #updateButton {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+@media (max-width: 800px) {
+  .main-content {
+      flex-direction: column;
+      align-items: center;
+  }
+  #listOfNotes {
+      width: 90%;
+      margin: 0 auto;
+  }
+  #selNote {
+      width: 90%;
+      margin: 0 auto;
+  }
+}
