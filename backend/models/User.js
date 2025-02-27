@@ -5,20 +5,17 @@ const UserSchema = new mongoose.Schema({
   username: { 
     type: String,
     required: true,
-    unique: true 
+    unique: true //Ensures no other user has the same username
     },
   email: { 
     type: String, 
     required: true, 
-    unique: true 
+    unique: true //Ensures no other user has the same email
   },
   password: { 
     type: String,
     required: true 
-    },
-  accessibleNotes: { 
-    type: Array,
-    },  
+    }, 
 });
 
 //pre middleware

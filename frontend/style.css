@@ -1,16 +1,18 @@
+/* Body styling: font, background, color, and layout */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #1a1a1e; /* Dark neutral */
-  color: #c0c0c5; /* Soft gray */
+  font-family: Arial, sans-serif; /* Set font */
+  background-color: #1a1a1e; /* Dark background */
+  color: #c0c0c5; /* Light text color */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
   flex-direction: column;
-  gap: 20px;
+  gap: 200=px; /* Note: possible typo */
 }
 
+/* Layout container styling */
 .layout-container {
   display: flex;
   flex-direction: column;
@@ -18,18 +20,20 @@ body {
   gap: 20px;
 }
 
+/* Main content area styling */
 .main-content {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 50px;
   justify-content: center;
   align-items: flex-start;
   width: 80%;
   max-width: 1200px;
 }
 
+/* General container styling */
 .container {
-  background-color: #26262b; /* Darker neutral */
+  background-color: #26262b;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -38,34 +42,38 @@ body {
   align-items: center;
 }
 
+/* Heading styles */
 h1, h2, h3 {
   text-align: center;
-  color: #a8a8b3; /* Light desaturated purple-gray */
+  color: #a8a8b3;
   margin: 5px 0;
 }
 
+/* Input and textarea styling */
 input[type="text"], input[type="email"], input[type="password"], textarea, span {
   width: 90%;
   padding: 8px;
   margin: 5px auto;
   display: block;
-  border: 1px solid #3a3a40; /* Slightly lighter gray */
+  border: 1px solid #3a3a40;
   border-radius: 5px;
-  background-color: #202025; /* Very dark gray */
+  background-color: #202025;
   color: #c0c0c5;
   text-align: center;
 }
 
+/* Textarea specific styling */
 textarea {
   resize: vertical;
   min-height: 240px;
   text-align: left;
 }
 
+/* Button styling */
 button {
   width: 100%;
   padding: 8px;
-  background-color: #5a5a67; /* Desaturated purple-gray */
+  background-color: #5a5a67;
   color: white;
   border: none;
   border-radius: 5px;
@@ -75,83 +83,168 @@ button {
   text-align: center;
 }
 
-button:hover {
-  background-color: #6a6a78; /* Slightly lighter hover effect */
+#listButton {
+  width: 100px;
 }
 
+/* Button hover effect */
+button:hover {
+  background-color: #6a6a78;
+  transform: scale(1.03);
+}
+
+/* Unordered list styling */
 ul {
   list-style-type: none;
   padding: 0;
   width: 100%;
 }
 
+/* List item styling */
 li {
   display: flex;
   justify-content: space-between;
   padding: 8px;
   border-bottom: 1px solid #3a3a40;
-  background-color: #2e2e34; /* Softened dark background */
+  background-color: #2e2e34;
   border-radius: 5px;
   margin: 3px 0;
   color: #c0c0c5;
 }
 
+/* Form layout styling */
 .form {
   display: flex;
   flex-direction: column;
 }
 
+/* Message styling for alerts */
 .message {
   text-align: center;
-  color: #d87070; /* Slightly muted error red */
+  color: #d87070;
   margin-top: 10px;
 }
 
+/* Button container styling */
 .button-container {
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
+/* New user selection styling */
+#selectNewUser {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Note list container styling */
 #listOfNotes {
   width: 300px;
-  height: 600px;
+  height: 800px;
   flex-shrink: 0;
 }
 
+/* Note list scrolling */
+#noteList {
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+/* Download list container styling */
+#noteDownloadList {
+  flex-shrink: 0;
+  width: 200px;
+  max-height: 700px;
+  overflow: auto;
+  overflow-x: hidden;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Owner list container styling */
+#ownerList {
+  overflow: auto;
+  max-height: 240px;
+  min-height: 240px;
+}
+
+/* Selected note editing container */
 #selNote {
-  width: 600px;
-  height: 600px;
+  width: 700px;
+  height: 800px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Logout container styling */
 #logout {
-  text-align: center;
-  width: 100%;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
   align-self: center;
 }
 
-#auth-buttons, #updateButton {
-display: flex;
-justify-content: center;
-align-items: center;
+/* Auth and update buttons styling */
+#auth-buttons, #updateButton, #newUserButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (max-width: 800px) {
-  .main-content {
-      flex-direction: column;
-      align-items: center;
-  }
-  #listOfNotes {
-      width: 90%;
-      margin: 0 auto;
-  }
-  #selNote {
-      width: 90%;
-      margin: 0 auto;
-  }
+/* Overlay styling for modals */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Overlay content styling */
+#overlayContentDown {
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  height: fit-content;
+  max-height: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+#overlayContentUp {
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  height: 140px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #2e2e2e; }
+::-webkit-scrollbar-thumb { background: #5c5c5c; }
+::-webkit-scrollbar-thumb:hover { background: #4b4b4b; }
+
+/* Responsive design adjustments */
+@media (max-width: 1200px) {
+  .main-content { flex-direction: column; align-items: center; }
+  #listOfNotes, #selNote { width: 90%; margin: 0 auto; }
 }

@@ -1,31 +1,31 @@
-const BASE_URL = "http://localhost:5000/api/notes";
+const BASE_URL = 'http://localhost:5000/api/notes'; //Base URL for API endpoints
 
-//Checks if token exists
+//Checks if token exists in local storage
 const checkAuth = () => {
   const token = localStorage.getItem('token');
   return token ? true : false;
 };
 
-//Checks if a note is selected
+//Checks if a note is selected in local storage (may contain a bug using undefined variable)
 const selNote = () => {
   const selNote = localStorage.getItem('selNote');
   return token ? true : false;
 }
 
-//Renders buttons on the homepage and redirects user if already logged in
+//On Home page, redirect if authenticated or display login/register buttons
 if (document.title === 'Home') {
   const authButtons = document.getElementById('auth-buttons');
   if (checkAuth()) {
-    location.href="notelist.html";
+    location.href = 'notelist.html';
   } else {
     authButtons.innerHTML = `
-      <a href="login.html"><button>Login</button></a>
-      <a href="register.html"><button>Register</button></a>
+      <a href='login.html'><button>Login</button></a>
+      <a href='register.html'><button>Register</button></a>
     `;
   }
 }
 
-//Enables Login functionality 
+//On Login page, handle login form submission and authenticate user
 if (document.title === 'Login') {
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ if (document.title === 'Login') {
   });
 }
 
-//Register functionality
+//On Register page, handle registration form submission and create new user
 if (document.title === 'Register') {
   document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ if (document.title === 'Register') {
     const password = document.getElementById('password').value;
     const email = document.getElementById('email').value;
 
-    //Replace with your backend API endpoint
+    //send new user data to backend
     const response = await fetch(`${BASE_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -77,15 +77,13 @@ if (document.title === 'Register') {
   });
 }
 
-//Calls for welcome message and gets list of user note
-if(document.title === 'Note List') {
+//On Note List page, load notes when window loads
+if (document.title === 'Note List') {
   window.onload = getNotes;
-  fetchWelcomeMessage()
+  //fetchWelcomeMessage()
 }
 
-
-
-//Function to fetch the welcome message from the server
+//Fetch welcome message from server using the stored token
 async function fetchWelcomeMessage() {
   const token = localStorage.getItem('token');
   
@@ -107,133 +105,339 @@ async function fetchWelcomeMessage() {
 
   } catch (error) {
     alert(error.message);
-    //Redirect to login page if the token is invalid or expired
+    //Redirect to login page if token is invalid or expired
     window.location.href = 'login.html';
   }
 };
 
-//Client-side logout function
+//Log out the user by clearing local storage and redirecting to Home
 const logout = () => {
-  //Remove all tokens from localStorage
   localStorage.removeItem('token');
   localStorage.removeItem('userId');
   localStorage.removeItem('selNote');
 
-  //Shows a success message
   alert('Logged out successfully!');
-
-  //Redirect to the home or login page
   window.location.href = 'index.html'; 
 };
 
-//function to get notes for athenticated user
+//Fetch notes for the authenticated user and render them
 async function getNotes() {
   const user = [localStorage.getItem('userId')];
-  const response = await fetch(`${BASE_URL}/user/${user}`, { method: "GET" });
+  const response = await fetch(`${BASE_URL}/user/${user}`, { method: 'GET' });
   const notes = await response.json();
   renderNotes(notes);
 }
 
-//function to display notes to user
+//Render notes on the page with view and delete options
 function renderNotes(notes) {
-  const noteList = document.getElementById("noteList");
-  noteList.innerHTML = ""; //Clear the list
+  const noteList = document.getElementById('noteList');
+  noteList.innerHTML = ''; //Clear existing list
+  const noteDownloadList = document.getElementById('noteDownloadList');
+  noteDownloadList.innerHTML = ''; //Clear existing download list
 
   notes.forEach((note) => {
-    const li = document.createElement("li");
+    const li = document.createElement('li');
+    const liD = document.createElement('li');
 
-    const span = document.createElement("span");
+    const span = document.createElement('span');
+    const spanD = document.createElement('span');
     span.textContent = note.title;
+    spanD.textContent = note.title;    
 
-    //Creates the view button
-    const toggleButton = document.createElement("button");
-    toggleButton.textContent = "View";
+    //Create the view button for each note
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'View';
     toggleButton.onclick = () => viewNote(note._id);
+    toggleButton.id = 'listButton';
 
-    //Creates the delete button
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
+    //Create the delete button for each note
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
     deleteButton.onclick = () => deleteNote(note._id);
+    deleteButton.id = 'listButton';
 
-    //Appends elements to the list item
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+
+    //Append elements to list items
     li.appendChild(span);
     li.appendChild(toggleButton);
     li.appendChild(deleteButton);
 
-    //Append the list item to the note list
+    liD.appendChild(checkbox);
+    liD.appendChild(spanD);
+    liD.dataset.value = note._id;
+    
+    //Add list items to their respective lists
     noteList.appendChild(li);
+    noteDownloadList.appendChild(liD);
   });
-
-  
 }
 
-//function to add note
+//Add a new note using form inputs and refresh the notes list
 async function addNote() {
-  const title = document.getElementById("title").value;
-  const description = document.getElementById("description").value;
+  const titleEle = document.getElementById('title');
+  const descriptionEle = document.getElementById('description');
+  const title = titleEle.value;
+  const description = descriptionEle.value;
   const owners = [localStorage.getItem('userId')];
-  //check if user has supplied both a title and descrition before adding note to db
-  if (title && description) {
-    const response = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, owners }),
-    });
-    const newNote = await response.json();
-    title.value = "";
-    description.value = "";
-    getNotes();
+  if (title.length <= 15) {//Checks title length and pass alert to user if title is too long
+    if (title && description) {//Checks that user enter both title and description
+      const response = await fetch(BASE_URL, {//Sends data to backend
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, owners }),
+      });
+      const newNote = await response.json();
+      //clears input text boxes after note has been added
+      titleEle.value = '';
+      descriptionEle.value = '';
+      getNotes();//Refeshes notes list to display new note
+    }
+  }
+  else{
+    alert('Title may only contain 15 characters');
   }
 }
 
-//fuction to update selected note
+//Update the selected note with new title and description
 async function updateNote() {
-  const title = document.getElementById("selTitle").value;
-  const description = document.getElementById("selDescription").value;
+  const title = document.getElementById('selTitle').value;
+  const description = document.getElementById('selDescription').value;
   const owners = localStorage.getItem('userId');
   const id = localStorage.getItem('selNote');
-    //checks if user has supplied both a title and descrition before updating note to db
-  if (title && description) {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, owners }),
-    });
-    const newNote = await response.json();
-    title.value = "";
-    description.value = "";
-    getNotes();
+  if (title.length <= 15) {//Checks title length and pass alert to user if title is too long
+    if (title && description) {//Checks that user enter both title and description
+      const response = await fetch(`${BASE_URL}/${id}`, {//Sends data to backend
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, owners }),
+      });
+      const newNote = await response.json();
+      title.value = '';
+      description.value = '';
+      getNotes();
+    }
   }
 }
 
-//function to display selected note to user and allow editing
+//View and edit a selected note; loads note details and owners
 async function viewNote(id) {
-  const response = await fetch(`${BASE_URL}/id/${id}`, { method: "GET" });
+  const response = await fetch(`${BASE_URL}/id/${id}`, { method: 'GET' });
   const note = await response.json();
   localStorage.setItem('selNote', id);
-  const selNoteDiv = document.getElementById('selNote')
-  const selNoteTitle = document.getElementById('selTitle')
-  const selNoteDesc = document.getElementById('selDescription')
-  if(selNote){
-    selNoteDiv.style.display = "inline";
-    console.log(note);
+  const selNoteDiv = document.getElementById('selNote');
+  const selNoteTitle = document.getElementById('selTitle');
+  const selNoteDesc = document.getElementById('selDescription');
+
+  if (selNote) {//checks if a note has been selected and displays the note if true
+    selNoteDiv.style.display = 'inline';
     selNoteTitle.value = note.title;
     selNoteDesc.value = note.description;
+    renderOwners(id);
+    getUsers();
   }
   getNotes();
 }
 
-//function to delete note from db
+//Fetch list of users and render the owners list dropdown
+async function getUsers() {
+  const response = await fetch(`${BASE_URL}/users/`, { method: 'GET' });
+  const users = await response.json();
+  renderOwnersList(users);
+}
+
+//Render dropdown list of potential note owners with an option to add a user
+async function renderOwnersList(users) {
+  const newOwnerList = document.getElementById('newOwnerList');
+  newOwnerList.innerHTML = ''; //Clear existing list
+  const option = document.createElement('option');
+  option.value = '';
+  option.textContent = '--Please Choose a user--';
+  newOwnerList.appendChild(option);
+  users.forEach((user) => {
+    const option = document.createElement('option');
+    option.value = user._id;
+    option.textContent = user.username;
+    newOwnerList.appendChild(option);
+  });
+  const addOwnerButton = document.createElement('button');
+  addOwnerButton.textContent = 'Add User';
+  addOwnerButton.onclick = () => addOwner();
+  newOwnerList.appendChild(addOwnerButton);
+}
+
+//Add a new user to the note's owners if not already included
+async function addUser() {
+  const ownerList = document.getElementById('newOwnerList');
+  const newOwner = ownerList.value;
+  const id = localStorage.getItem('selNote');
+  const response = await fetch(`${BASE_URL}/id/${id}`, { method: 'GET' });
+  const note = await response.json();
+  const title = note.title;
+  const description = note.description;
+  const owners = note.owners;
+
+  if (!owners.includes(newOwner)) {
+    owners.push(newOwner);
+    if (title && description && owners) {
+      const response = await fetch(`${BASE_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, owners }),
+      });
+      title.value = '';
+      description.value = '';
+      viewNote(note._id);
+    }
+  }
+  else{
+    alert('User already has access to this note');
+  }
+}
+
+//Render the list of current note owners with a remove button for each
+async function renderOwners(noteId) {
+  const ownerList = document.getElementById('ownerList');
+  ownerList.innerHTML = ''; //Clears existing owner list
+  const response = await fetch(`${BASE_URL}/id/${noteId}`, { method: 'GET' });
+  const notes = await response.json();
+
+  notes.owners.forEach(async (id) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    const response = await fetch(`${BASE_URL}/username/${id}`, { method: 'GET' });
+    const owner = await response.json();
+    span.textContent = owner;
+
+    //Create remove button for each owner
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.onclick = () => removeUser(owner, noteId);
+
+    li.appendChild(span);
+    li.appendChild(removeButton);
+    ownerList.appendChild(li);
+  });
+}
+
+//Remove a user from a note's owners and refresh the view
+async function removeUser(owner, noteId) {
+  const id = [owner, noteId];
+  await fetch(`${BASE_URL}/username/${id}`, { method: 'PUT' });
+  viewNote(noteId);
+  getNotes();
+}
+
+//Delete a note and update the note list; hides selected note view if needed
 async function deleteNote(id) {
-  if(id == localStorage.getItem('selNote')) {
-    console.log(id);
-    console.log(localStorage.getItem('selNote'));
+  if (id == localStorage.getItem('selNote')) {
     localStorage.removeItem('selNote');
-    const selNoteDiv = document.getElementById('selNote')
-    selNoteDiv.style.display = "none";
+    const selNoteDiv = document.getElementById('selNote');
+    selNoteDiv.style.display = 'none';
   }
-  await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+  await fetch(`${BASE_URL}/${id}`, { method: 'DELETE' });
   getNotes();
 }
 
+//Open overlay to show note download options
+function download() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'flex';
+  const overlayContentDown = document.getElementById('overlayContentDown');
+  overlayContentDown.style.display = 'flex';
+  getNotes();
+}
 
+//Close the overlay for upload/download actions
+function closeOverlay() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'none';
+  const overlayContentDown = document.getElementById('overlayContentDown');
+  overlayContentDown.style.display = 'none';
+  const overlayContentUp = document.getElementById('overlayContentUp');
+  overlayContentUp.style.display = 'none';
+}
+
+//Download the list of selected notes by iterating through checkboxes
+async function downloadNoteList() {
+  const noteDownloadList = document.getElementById('noteDownloadList');
+  const listItems = noteDownloadList.querySelectorAll('li');
+  listItems.forEach(async li => {
+    const id = li.dataset.value;
+    const checkbox = li.querySelector('input[type="checkbox"]');
+    if (checkbox.checked) {
+      const response = await fetch(`${BASE_URL}/id/${id}`, { method: 'GET' });
+      const note = await response.json();
+      downloadNote(note);
+    }
+  });
+  closeOverlay();
+}
+
+//Trigger browser download of a note as a text file
+function downloadNote(note) {
+  let download = document.createElement('a');
+  download.href = 'data:application/octet-stream,' + encodeURIComponent(note.title + '_' + note.owners + '_' + note.description);
+  download.download = note.title + '.txt';
+  download.click();
+}
+
+//Open overlay for file upload
+function upload() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'flex';
+  const overlayContentUp = document.getElementById('overlayContentUp');
+  overlayContentUp.style.display = 'flex';
+}
+
+//Read uploaded files, parse note data, and send to the server
+function uploadFiles() {
+  const filesToLoad = document.getElementById("filesToLoad").files;
+
+  Array.from(filesToLoad).forEach(file => {
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const text = event.target.result; //Get file content
+      const data = text.split('_', 3);
+      const title = data[0];
+      const ownersString = data[1];
+      const description = data[2];
+      let owners = '';
+    
+      //Checks if there are multiple owners in the file
+      //if multiple splits the string into an array
+      if (ownersString.includes(',')) {
+        owners = ownersString.split(',');
+        console.log(owners + '1');
+      }
+      else{
+        owners = ownersString;
+        console.log(owners + '2');
+      }
+    
+       //Validate file format for required fields
+       if (!title || !owners || !description) {
+        alert("File format error: missing title, owners, or description");
+        return;
+      }
+
+      //Add current user to owners if not already included
+      if (!owners.includes(localStorage.getItem('userId'))) {
+        owners.push(localStorage.getItem('userId'));
+      }
+      
+      //Send note data to backend API
+      const response = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, owners }),
+      });
+      const newNote = await response.json();
+      getNotes();
+    };
+    reader.readAsText(file);
+  });
+  closeOverlay();
+}

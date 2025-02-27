@@ -6,6 +6,7 @@ const noteSchema = new mongoose.Schema({
     type: String,
     trim: true, //Removes leading and trailing spaces
     required: true,
+    maxLength: 15,//Limits charcter length
   },
   description: {
     type: String,

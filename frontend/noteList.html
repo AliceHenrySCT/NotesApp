@@ -1,34 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Meta tags, title, and stylesheet link -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Note List</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Main layout container for the note app -->
   <div class="layout-container">
+    <!-- Container for notes list and creation -->
     <div class="main-content">
       <div class="container" id="listOfNotes">
-        <h2>Notes</h2>
+        <h2 id="listTitle">Notes</h2>
+        <!-- Inputs for note title and description -->
         <input type="text" id="title" placeholder="Note Title" required>
         <input type="text" id="description" placeholder="Note Description" required>
-        <button id="auth-buttons" text-align="center" class="button-container" onclick="addNote()">Add</button>
+        <!-- Button to add a new note -->
+        <button id="auth-buttons" class="button-container" onclick="addNote()">Add</button>
+        <!-- Unordered list to display notes -->
         <ul id="noteList"></ul>
       </div>
+      <!-- Overlay for download/upload dialogs -->
+      <div id="overlay" style="display: none;">
+        <div id="overlayContentDown" class="container" style="display: none;">
+          <h3>Check the box for each note you would like to download</h3>
+          <ul id="noteDownloadList"></ul>
+          <button id="downloadConfirm" onclick="downloadNoteList()">Confirm</button>
+          <button id="closeOverlay" onclick="closeOverlay()">Cancel</button>
+        </div>
+        <div id="overlayContentUp" class="container" style="display: none;">
+          <h3>Select the note files you want to upload</h3>
+          <input type="file" id="filesToLoad" multiple>
+          <button id="uploadConfirm" onclick="uploadFiles()">Confirm</button>
+          <button id="closeOverlay" onclick="closeOverlay()">Cancel</button>
+        </div>
+      </div>
+      <!-- Container for editing a selected note -->
       <div id="selNote" style="display:none;" class="container">
         <h1>Editing Note</h1>
         <h3>Title</h3>
         <input type="text" id="selTitle" placeholder="Title" required>
         <h3>Body</h3>
         <textarea id="selDescription" placeholder="Description" required></textarea>
-        <button id="updateButton" class="button-container" onclick="updateNote()">Save Changes</button> 
+        <button id="updateButton" class="button-container" onclick="updateNote()">Update Note</button> 
+        <h3>Users with access</h3>
+        <ul id="ownerList"></ul>
+        <h3>Select a new user below to share access to this note.</h3>
+        <div id="selectNewUser">
+          <select name="users" id="newOwnerList"></select>
+          <button id="newUserButton" class="button-container" onclick="addUser()">Give Selected User Access</button>
+        </div>
       </div>
     </div>
+    <!-- Container for download, upload, and logout buttons -->
     <div class="container" id="logout">
+      <button onclick="download()">Download</button>
+      <button onclick="upload()">Upload</button>
       <button onclick="logout()">Logout</button>
     </div>
   </div>
+  <!-- External JavaScript for functionality -->
   <script src="script.js"></script>
 </body>
 </html>
