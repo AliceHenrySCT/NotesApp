@@ -227,6 +227,6 @@ The frontend provides functionality for:
   Users can upload files containing note data. The expected file format is:
   - Format: title_owners_description
   - Details:  
-    - title: The title of the note (max 15 characters).  
+    - title: The title of the note (max 15 characters) and can not contain underscores '_' .  
     - owners: Either a single owner or multiple owner IDs separated by commas. If current user's ID is not in the note it will be added when uploaded.  
     - description: The note description.
